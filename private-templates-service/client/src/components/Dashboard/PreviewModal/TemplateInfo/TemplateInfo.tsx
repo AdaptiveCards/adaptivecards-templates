@@ -1,9 +1,12 @@
 import React from 'react';
 import { ActionButton } from 'office-ui-fabric-react';
 
-import { Template } from 'adaptive-templating-service-typescript-node';
+import { Template, TemplateInstance } from 'adaptive-templating-service-typescript-node';
 
+import { IDropdownOption} from 'office-ui-fabric-react/lib/Dropdown';
 import PublishModal from '../../../Common/PublishModal';
+import { StyledSortDropdown } from "./styled";
+import { THEME } from '../../../../globalStyles';
 
 import {
   OuterWrapper,
@@ -70,33 +73,57 @@ interface Props {
 
 interface State {
   isPublishOpen: boolean;
+  version: string
 }
 
 class TemplateInfo extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { isPublishOpen: false }
+    this.state = { isPublishOpen: false, version: "1.0" }
   }
 
   toggleModal = () => {
     this.setState({ isPublishOpen: !this.state.isPublishOpen });
   }
 
+  versionList = (instances: TemplateInstance[] | undefined, excludedVersion?: string): IDropdownOption[] => {
+    if (!instances) return [];
+    let options: IDropdownOption[] = [];
+    for (let instance of instances){
+      if (!instance.version) continue;
+      if (excludedVersion && instance.version === excludedVersion) continue;
+      options.push({key: instance.version, text: `Version ${instance.version}`});
+    }
+    return options;
+  }
+
+  onVersionChange = (event: React.FormEvent<HTMLDivElement>, option?:IDropdownOption) => {
+    if (!option) return;
+    this.setState({ version: option.key.toString() });
+  }
+
   render() {
     const {
       isLive,
-      createdAt
+      createdAt, 
+      instances,
     } = this.props.template;
     const {
       onClose
     } = this.props;
-
     return (
       <OuterWrapper>
         <HeaderWrapper>
           <TopRowWrapper>
             <TitleWrapper>
-              <Title>Version 1.0.0</Title>
+              <Title>
+                <StyledSortDropdown
+                  placeHolder = {`Version ${this.state.version}`}
+                  options = {this.versionList(instances)}
+                  onChange = {this.onVersionChange}
+                  theme = {THEME.LIGHT}
+                />
+              </Title>
               <StatusIndicator isPublished={isLive} />
               <Status>{isLive ? 'Published' : 'Draft'}</Status>
             </TitleWrapper>

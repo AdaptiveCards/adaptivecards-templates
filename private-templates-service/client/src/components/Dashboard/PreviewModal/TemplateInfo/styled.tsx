@@ -2,6 +2,12 @@ import styled from 'styled-components';
 import { COLORS } from '../../../../globalStyles';
 
 import { Icon } from 'office-ui-fabric-react';
+import { Dropdown } from "office-ui-fabric-react";
+
+export const StyledSortDropdown = styled(Dropdown)`
+  width: 100%;
+  padding-right: 10px;
+`;
 
 export const OuterWrapper = styled.div`
   flex: 1 0 auto;

@@ -86,6 +86,8 @@ class Dashboard extends React.Component<Props, State> {
       templates = this.props.templates.templates.templates;
     }
     this.props.setPage("Dashboard");
+    console.log(this.selectTemplate);
+    console.log(templates);
     return (
       <DashboardContainer>
         <Title>Recent</Title>
